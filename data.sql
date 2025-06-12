@@ -250,8 +250,6 @@ CREATE TABLE social_media_links (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-
-
 -- Insert initial records for each platform (with placeholder URLs)
 INSERT INTO social_media_links (platform, link_url) VALUES
 ('Facebook', '#'),
