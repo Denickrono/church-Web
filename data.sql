@@ -251,6 +251,7 @@ CREATE TABLE social_media_links (
 );
 
 
+
 -- Insert initial records for each platform (with placeholder URLs)
 INSERT INTO social_media_links (platform, link_url) VALUES
 ('Facebook', '#'),
