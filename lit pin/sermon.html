@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Church Website - Sermon Management</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #1a3c6e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        /* Sermon display styles */
+        .sermon-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .sermon-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        
+        .sermon-title {
+            color: #1a3c6e;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        
+        .sermon-date {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .sermon-speaker {
+            font-weight: bold;
+            color: #444;
+        }
+        
+        .sermon-scripture {
+            margin: 10px 0;
+            color: #333;
+        }
+        
+        .sermon-description {
+            margin-top: 10px;
+        }
+        
+        /* Admin form styles */
+        .admin-form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: inherit;
+        }
+        
+        textarea {
+            min-height: 100px;
+        }
+        
+        button {
+            background-color: #1a3c6e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #16325e;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        /* Tabs for admin/public view */
+        .tabs {
+            margin-bottom: 20px;
+            display: flex;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background-color: #eee;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab.active {
+            background-color: #1a3c6e;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Grace Community Church</h1>
+        <p>Sharing God's Word Every Sunday</p>
+    </header>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="openTab(event, 'sermon-view')">Public View</div>
+        <div class="tab" onclick="openTab(event, 'admin-panel')">Admin Panel</div>
+    </div>
+    
+    <div id="sermon-view" class="tab-content active">
+        <h2>Recent Sermons</h2>
+        <div class="sermon-container" id="sermon-list">
+            <!-- Sermon cards will be populated here -->
+        </div>
+    </div>
+    
+    <div id="admin-panel" class="tab-content">
+        <h2>Add New Sermon</h2>
+        <div class="success-message" id="success-message">Sermon added successfully!</div>
+        
+        <div class="admin-form">
+            <div class="form-group">
+                <label for="sermon-title">Sermon Title:</label>
+                <input type="text" id="sermon-title" placeholder="Enter sermon title">
+            </div>
+            
+            <div class="form-group">
+                <label for="sermon-date">Date:</label>
+                <input type="date" id="sermon-date">
+            </div>
+            
+            <div class="form-group">
+                <label for="sermon-speaker">Speaker:</label>
+                <input type="text" id="sermon-speaker" placeholder="Pastor's name">
+            </div>
+            
+            <div class="form-group">
+                <label for="sermon-scripture">Scripture Reference:</label>
+                <input type="text" id="sermon-scripture" placeholder="e.g., John 3:16-21">
+            </div>
+            
+            <div class="form-group">
+                <label for="sermon-description">Description:</label>
+                <textarea id="sermon-description" placeholder="Enter sermon description"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="sermon-audio">Audio File (optional):</label>
+                <input type="file" id="sermon-audio" accept="audio/*">
+            </div>
+            
+            <button onclick="addSermon()">Add Sermon</button>
+        </div>
+        
+        <h2>Manage Existing Sermons</h2>
+        <div class="sermon-container" id="admin-sermon-list">
+            <!-- Admin view of sermons will be here -->
+        </div>
+    </div>
+    
+    <script>
+        // Sample data to start with
+        let sermons = [
+            {
+                id: 1,
+                title: "Walking in Faith",
+                date: "2025-05-04",
+                speaker: "Pastor John Smith",
+                scripture: "Hebrews 11:1-6",
+                description: "An exploration of what it means to live by faith in today's challenging world."
+            },
+            {
+                id: 2,
+                title: "The Power of Prayer",
+                date: "2025-04-27",
+                speaker: "Pastor Mary Johnson",
+                scripture: "James 5:13-18",
+                description: "Discovering how prayer can transform our lives and bring us closer to God."
+            }
+        ];
+        
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+        
+        // Generate sermon HTML card
+        function createSermonCard(sermon, isAdmin = false) {
+            const card = document.createElement('div');
+            card.className = 'sermon-card';
+            
+            let htmlContent = `
+                <h3 class="sermon-title">${sermon.title}</h3>
+                <p class="sermon-date">${formatDate(sermon.date)}</p>
+                <p class="sermon-speaker">${sermon.speaker}</p>
+                <p class="sermon-scripture"><strong>Scripture:</strong> ${sermon.scripture}</p>
+                <p class="sermon-description">${sermon.description}</p>
+            `;
+            
+            if (isAdmin) {
+                htmlContent += `
+                    <button onclick="editSermon(${sermon.id})" style="background-color: #28a745; margin-right: 5px;">Edit</button>
+                    <button onclick="deleteSermon(${sermon.id})" style="background-color: #dc3545;">Delete</button>
+                `;
+            }
+            
+            card.innerHTML = htmlContent;
+            return card;
+        }
+        
+        // Display sermons
+        function displaySermons() {
+            // Sort sermons by date (newest first)
+            const sortedSermons = [...sermons].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Public view
+            const sermonList = document.getElementById('sermon-list');
+            sermonList.innerHTML = '';
+            
+            // Admin view
+            const adminSermonList = document.getElementById('admin-sermon-list');
+            adminSermonList.innerHTML = '';
+            
+            if (sortedSermons.length === 0) {
+                sermonList.innerHTML = '<p>No sermons available.</p>';
+                adminSermonList.innerHTML = '<p>No sermons available.</p>';
+                return;
+            }
+            
+            sortedSermons.forEach(sermon => {
+                // Add to public view
+                sermonList.appendChild(createSermonCard(sermon));
+                
+                // Add to admin view with edit/delete buttons
+                adminSermonList.appendChild(createSermonCard(sermon, true));
+            });
+        }
+        
+        // Add new sermon
+        function addSermon() {
+            const title = document.getElementById('sermon-title').value.trim();
+            const date = document.getElementById('sermon-date').value;
+            const speaker = document.getElementById('sermon-speaker').value.trim();
+            const scripture = document.getElementById('sermon-scripture').value.trim();
+            const description = document.getElementById('sermon-description').value.trim();
+            
+            // Simple validation
+            if (!title || !date || !speaker) {
+                alert('Please fill in all required fields (title, date, speaker).');
+                return;
+            }
+            
+            // Create new sermon object
+            const newSermon = {
+                id: sermons.length > 0 ? Math.max(...sermons.map(s => s.id)) + 1 : 1,
+                title,
+                date,
+                speaker,
+                scripture,
+                description
+            };
+            
+            // Add to sermons array
+            sermons.push(newSermon);
+            
+            // Update display
+            displaySermons();
+            
+            // Reset form
+            document.getElementById('sermon-title').value = '';
+            document.getElementById('sermon-date').value = '';
+            document.getElementById('sermon-speaker').value = '';
+            document.getElementById('sermon-scripture').value = '';
+            document.getElementById('sermon-description').value = '';
+            document.getElementById('sermon-audio').value = '';
+            
+            // Show success message
+            const successMessage = document.getElementById('success-message');
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Delete sermon
+        function deleteSermon(id) {
+            if (confirm('Are you sure you want to delete this sermon?')) {
+                sermons = sermons.filter(sermon => sermon.id !== id);
+                displaySermons();
+            }
+        }
+        
+        // Edit sermon (simplified - in a real application, you'd use a form)
+        function editSermon(id) {
+            const sermon = sermons.find(s => s.id === id);
+            if (!sermon) return;
+            
+            // Fill the form with existing values
+            document.getElementById('sermon-title').value = sermon.title;
+            document.getElementById('sermon-date').value = sermon.date;
+            document.getElementById('sermon-speaker').value = sermon.speaker;
+            document.getElementById('sermon-scripture').value = sermon.scripture;
+            document.getElementById('sermon-description').value = sermon.description;
+            
+            // Delete the old sermon
+            sermons = sermons.filter(s => s.id !== id);
+            
+            // Switch to admin panel tab
+            openTab(null, 'admin-panel');
+            
+            // Focus on the first field
+            document.getElementById('sermon-title').focus();
+        }
+        
+        // Tab functionality
+        function openTab(evt, tabName) {
+            // Hide all tab content
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Remove active class from all tabs
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Show the selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active to the clicked tab
+            if (evt) {
+                evt.currentTarget.classList.add('active');
+            } else {
+                // Find tab by name
+                for (let i = 0; i < tabs.length; i++) {
+                    if (tabs[i].textContent.toLowerCase().includes(tabName.replace('-', ' '))) {
+                        tabs[i].classList.add('active');
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Initialize display
+        window.onload = function() {
+            displaySermons();
+        };
+    </script>
+</body>
+</html>
