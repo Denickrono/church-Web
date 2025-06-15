@@ -116,6 +116,20 @@ function getContacts($show_hidden = true) {
     return $contacts;
 }
 
+// Function to get announcements
+function getAnnouncements($show_hidden = true) {
+    global $conn;
+    $announcements = array();
+    $sql = $show_hidden ? "SELECT * FROM announcements ORDER BY created_at DESC" : "SELECT * FROM announcements WHERE is_hidden = 0 ORDER BY created_at DESC";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $announcements[] = $row;
+        }
+    }
+    return $announcements;
+}
+
 // Get data for display
 $sermons = getLatestSermons(false); // Fetch only non-hidden sermons
 $events = getEvents(false); // Fetch only non-hidden events
@@ -123,6 +137,7 @@ $services = getServices(false); // Fetch only non-hidden services
 $about_items = getAboutItems(false); // Fetch only non-hidden about items
 $ministries = getMinistries(false); // Fetch only non-hidden ministries
 $contacts = getContacts(false); // Fetch only non-hidden contacts
+$announcements = getAnnouncements(false); // Fetch only non-hidden announcements
 ?>
 
 <!DOCTYPE html>
@@ -317,20 +332,20 @@ $contacts = getContacts(false); // Fetch only non-hidden contacts
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin-top: 2rem;
         }
-        .sermon-container {
+        .sermon-container, .announcement-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 30px;
         }
-        .sermon-card {
+        .sermon-card, .announcement-card {
             border: 1px solid #ddd;
             border-radius: 5px;
             padding: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             background-color: #fff;
         }
-        .sermon-title {
+        .sermon-title, .announcement-title {
             color: #1a3c6e;
             margin-top: 0;
             font-size: 1.4em;
@@ -348,7 +363,7 @@ $contacts = getContacts(false); // Fetch only non-hidden contacts
             margin: 10px 0;
             color: #333;
         }
-        .sermon-description {
+        .sermon-description, .announcement-description {
             margin-top: 10px;
         }
         audio {
@@ -362,7 +377,7 @@ $contacts = getContacts(false); // Fetch only non-hidden contacts
             .nav-links {
                 display: none;
             }
-            .sermon-container {
+            .sermon-container, .announcement-container {
                 grid-template-columns: 1fr;
             }
         }
@@ -375,6 +390,7 @@ $contacts = getContacts(false); // Fetch only non-hidden contacts
                 <div class="logo">New Life International</div>
                 <ul class="nav-links">
                     <li><a href="#about">About</a></li>
+                    <li><a href="#announcements">Announcements</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#events">Events</a></li>
                     <li><a href="#ministries">Ministries</a></li>
@@ -405,6 +421,26 @@ $contacts = getContacts(false); // Fetch only non-hidden contacts
                 <?php foreach ($about_items as $item): ?>
                     <p><?php echo nl2br(htmlspecialchars($item['content'])); ?></p>
                 <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <section id="announcements" style="background-color:rgb(157, 176, 179);">
+        <div class="container">
+            <div class="section-title">
+                <h2>Announcements</h2>
+            </div>
+            <?php if (empty($announcements)): ?>
+                <p>No announcements available.</p>
+            <?php else: ?>
+                <div class="announcement-container">
+                    <?php foreach ($announcements as $announcement): ?>
+                        <div class="announcement-card">
+                            <h3 class="announcement-title"><?php echo htmlspecialchars($announcement['title']); ?></h3>
+                            <p class="announcement-description"><?php echo nl2br(htmlspecialchars($announcement['description'])); ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             <?php endif; ?>
         </div>
     </section>

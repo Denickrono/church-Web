@@ -248,10 +248,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
         </a>
 
          <a href="admin_social_media.php" class="menu-item">
-            <span class="menu-icon">🔳</span>0720380975
+            <span class="menu-icon">🔳</span>            
             <span>Social Media Links</span>
         </a>
        
+           <a href="admin_announcements.php" class="menu-item">
+            <span class="menu-icon">🔳</span>            
+            <span>Announcements</span>
+        </a>
         <a href="?action=logout" class="menu-item logout">
             <span class="menu-icon">🚪</span>
             <span>Logout</span>
