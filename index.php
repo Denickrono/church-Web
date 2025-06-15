@@ -146,6 +146,7 @@ $announcements = getAnnouncements(false); // Fetch only non-hidden announcements
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Life International</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -317,11 +318,15 @@ $announcements = getAnnouncements(false); // Fetch only non-hidden announcements
             display: block;
             text-decoration: none;
         }
+        .social-icons {
+            margin-top: 1rem;
+        }
         .social-icons a {
             display: inline-block;
-            margin-right: 10px;
+            margin-right: 15px;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            transition: color 0.3s;
         }
         .social-icons a:hover {
             color: #e74c3c;
@@ -379,6 +384,10 @@ $announcements = getAnnouncements(false); // Fetch only non-hidden announcements
             }
             .sermon-container, .announcement-container {
                 grid-template-columns: 1fr;
+            }
+            .social-icons a {
+                margin-right: 10px;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -603,18 +612,22 @@ $announcements = getAnnouncements(false); // Fetch only non-hidden announcements
                     <h3>New Life International</h3>
                     <p>A place to belong, believe, and become</p>
                     <div class="social-icons">
-                        <p>Follow us on</p>
-                        <a href="<?php echo isset($social_media_links['Facebook']) ? htmlspecialchars($social_media_links['Facebook']) : '#'; ?>" class="text-gray-400 hover:text-gray-300">
-                            <span class="sr-only">Facebook</span><i class="fab fa-facebook-f"></i>
-                        </a><br>
-                        <a href="<?php echo isset($social_media_links['Instagram']) ? htmlspecialchars($social_media_links['Instagram']) : '#'; ?>" class="text-gray-400 hover:text-gray-300">
-                            <span class="sr-only">Instagram</span><i class="fab fa-instagram"></i>
-                        </a><br>
-                        <a href="<?php echo isset($social_media_links['Twitter']) ? htmlspecialchars($social_media_links['Twitter']) : '#'; ?>" class="text-gray-400 hover:text-gray-300">
-                            <span class="sr-only">Twitter</span><i class="fab fa-twitter"></i>
-                        </a><br>
-                        <a href="<?php echo isset($social_media_links['YouTube']) ? htmlspecialchars($social_media_links['YouTube']) : '#'; ?>" class="text-gray-400 hover:text-gray-300">
-                            <span class="sr-only">YouTube</span><i class="fab fa-youtube"></i>
+                        <p>Follow us on:</p>
+                        <a href="<?php echo isset($social_media_links['Facebook']) ? htmlspecialchars($social_media_links['Facebook']) : '#'; ?>">
+                            <span class="sr-only">Facebook</span>
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="<?php echo isset($social_media_links['Instagram']) ? htmlspecialchars($social_media_links['Instagram']) : '#'; ?>">
+                            <span class="sr-only">Instagram</span>
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="<?php echo isset($social_media_links['Twitter']) ? htmlspecialchars($social_media_links['Twitter']) : '#'; ?>">
+                            <span class="sr-only">Twitter</span>
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="<?php echo isset($social_media_links['YouTube']) ? htmlspecialchars($social_media_links['YouTube']) : '#'; ?>">
+                            <span class="sr-only">YouTube</span>
+                            <i class="fab fa-youtube"></i>
                         </a>
                     </div>
                 </div>
